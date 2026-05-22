@@ -1,0 +1,27 @@
+{
+  "name": "@mitodl/marimo-notebooks",
+  "version": "0.1.0",
+  "private": true,
+  "license": "BSD-3-Clause",
+  "scripts": {
+    "start": "webpack serve --mode development",
+    "build": "webpack --stats-error-details --mode production",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@apache-superset/core": "^0.1.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "antd": "^5.26.0"
+  },
+  "devDependencies": {
+    "@apache-superset/core": "^0.1.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
+  }
+}

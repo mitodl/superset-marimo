@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.mypy_cache/
+.ruff_cache/
+dist/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Extension build artifacts
+*.supx
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Superset dev
+.sup/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store

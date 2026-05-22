@@ -1,0 +1,9 @@
+{
+  "publisher": "mitodl",
+  "name": "marimo-notebooks",
+  "displayName": "Marimo Notebooks",
+  "version": "0.1.0",
+  "license": "BSD-3-Clause",
+  "description": "Interactive Marimo notebooks integrated with Superset data sources. Allows data engineers and analysts to open reactive Python notebooks pre-connected to the same databases configured in Superset.",
+  "permissions": ["can_read", "can_write"]
+}

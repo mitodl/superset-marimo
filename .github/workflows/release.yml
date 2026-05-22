@@ -1,0 +1,87 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write  # required to create the GitHub release and upload assets
+
+jobs:
+  build-and-release:
+    name: Build .supx and publish release
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ------------------------------------------------------------------ #
+      # 1. Parse the version from the pushed tag (strip leading "v")        #
+      # ------------------------------------------------------------------ #
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      # ------------------------------------------------------------------ #
+      # 2. Build frontend assets                                            #
+      # ------------------------------------------------------------------ #
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend (production)
+        working-directory: frontend
+        run: npm run build
+
+      # ------------------------------------------------------------------ #
+      # 3. Stamp the version into extension.json and bundle the .supx       #
+      # ------------------------------------------------------------------ #
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install superset-extensions-cli
+        run: uv tool install apache-superset-extensions-cli
+
+      - name: Update extension version
+        run: superset-extensions update --version "${{ steps.version.outputs.version }}"
+
+      - name: Bundle extension
+        run: superset-extensions bundle
+
+      # ------------------------------------------------------------------ #
+      # 4. Verify the expected artifact exists                              #
+      # ------------------------------------------------------------------ #
+      - name: Locate .supx artifact
+        id: artifact
+        run: |
+          SUPX=$(ls mitodl.marimo-notebooks-*.supx 2>/dev/null | head -1)
+          if [ -z "$SUPX" ]; then
+            echo "ERROR: no .supx file found after bundling"
+            ls -la
+            exit 1
+          fi
+          echo "path=$SUPX" >> "$GITHUB_OUTPUT"
+          echo "Found artifact: $SUPX"
+
+      # ------------------------------------------------------------------ #
+      # 5. Create the GitHub release and attach the .supx                  #
+      # ------------------------------------------------------------------ #
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Release ${{ github.ref_name }}"
+          tag_name: "${{ github.ref_name }}"
+          generate_release_notes: true
+          files: "${{ steps.artifact.outputs.path }}"
+          fail_on_unmatched_files: true

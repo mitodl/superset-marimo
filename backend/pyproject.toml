@@ -1,0 +1,45 @@
+[project]
+name = "mitodl-marimo-notebooks"
+version = "0.1.0"
+description = "Backend for the Marimo Notebooks Superset extension"
+readme = "README.md"
+license = "BSD-3-Clause"
+authors = [{ name = "MIT Open Learning Engineering", email = "ol-data@mit.edu" }]
+requires-python = ">=3.12"
+dependencies = [
+    "apache-superset-core>=0.1.0",
+    "itsdangerous>=2.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.10.0",
+    "pytest>=8.0.0",
+    "pytest-mock>=3.14.0",
+    "ruff>=0.9.0",
+]
+
+[tool.apache_superset_extensions.build]
+include = [
+    "src/mitodl/marimo_notebooks/**/*.py",
+]
+exclude = []
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ANN", "S"]
+ignore = [
+    "ANN101",  # missing type annotation for self
+    "ANN102",  # missing type annotation for cls
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
