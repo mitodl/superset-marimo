@@ -103,12 +103,24 @@ After the first deployment, add to `ol_governance_roles.json` in `ol-infrastruct
 {"permission": {"name": "can_write"}, "view_menu": {"name": "marimo_notebooks"}}
 ```
 
-Assign `can_read` to `ol_data_engineer`, `ol_business_analyst`, `ol_researcher`, `ol_data_analyst`, `ol_instructor`.  
+Assign `can_read` to `ol_data_engineer`, `ol_business_analyst`, `ol_researcher`, `ol_data_analyst`, `ol_instructor`.
 Assign `can_write` to `ol_data_engineer`, `ol_business_analyst`.
 
 The `flask fab import-roles` command in the Helm init script picks this up on next deployment.
 
 ## Development
+
+### Code checks
+
+From the repository root, run [prek](https://prek.j178.dev/), which reads `.pre-commit-config.yaml`. Use the version pinned in `.github/workflows/autofix.yml`:
+
+```bash
+uv tool install prek==0.5.4
+prek install -f      # replaces an existing pre-commit git hook
+prek run --all-files
+```
+
+The `prek` check runs every hook on pull requests and pushes to `main`. On pull requests, [autofix.ci](https://autofix.ci/) pushes a commit with any converged fixes. Fixes under `.github/` must be committed locally.
 
 ### Backend
 

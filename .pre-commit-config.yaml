@@ -12,7 +12,8 @@ repos:
       - id: debug-statements
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.0
+    # v0.9.0 predates ruff-check; use the shared rollout rev so the hook loads.
+    rev: v0.16.8
     hooks:
       - id: ruff-format
         files: ^backend/
@@ -28,6 +29,8 @@ repos:
         additional_dependencies:
           - apache-superset-core>=0.1.0
           - itsdangerous>=2.1.0
+          # The isolated mypy environment needs stubs for the API's requests import.
+          - types-requests
 
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0

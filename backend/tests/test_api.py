@@ -4,6 +4,7 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
+from flask import Flask
 
 
 @pytest.fixture
@@ -15,12 +16,13 @@ def mock_sm() -> MagicMock:
 
 
 @pytest.fixture
-def app_context(mock_sm: MagicMock):
+def app_context(mock_sm: MagicMock) -> Flask:
     """Minimal Flask app context for testing API helpers."""
-    from flask import Flask
-
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = "test-secret-key-not-for-production"
+    # Test-only signing key, never a production credential.
+    app.config["SECRET_KEY"] = (
+        "test-secret-key-not-for-production"  # pragma: allowlist secret
+    )
     app.config["MARIMO_SIDECAR_URL"] = "http://localhost:8765"
     app.appbuilder = MagicMock()
     app.appbuilder.sm = mock_sm
@@ -30,7 +32,7 @@ def app_context(mock_sm: MagicMock):
 class TestBuildLaunchUrl:
     """Tests for _build_launch_url."""
 
-    def test_edit_mode_url_contains_mode_param(self, app_context) -> None:
+    def test_edit_mode_url_contains_mode_param(self, app_context: Flask) -> None:
         from mitodl.marimo_notebooks.api import _build_launch_url
 
         with app_context.app_context(), patch("flask_login.current_user") as mock_user:
@@ -41,7 +43,7 @@ class TestBuildLaunchUrl:
         assert "nb-123" in url
         assert "token=" in url
 
-    def test_run_mode_url_contains_mode_param(self, app_context) -> None:
+    def test_run_mode_url_contains_mode_param(self, app_context: Flask) -> None:
         from mitodl.marimo_notebooks.api import _build_launch_url
 
         with app_context.app_context(), patch("flask_login.current_user") as mock_user:
@@ -51,8 +53,9 @@ class TestBuildLaunchUrl:
         assert "mode=run" in url
         assert "nb-456" in url
 
-    def test_token_is_signed_with_secret_key(self, app_context) -> None:
+    def test_token_is_signed_with_secret_key(self, app_context: Flask) -> None:
         from itsdangerous import URLSafeTimedSerializer
+
         from mitodl.marimo_notebooks.api import _LAUNCH_SALT, _build_launch_url
 
         with app_context.app_context(), patch("flask_login.current_user") as mock_user:

@@ -21,7 +21,6 @@ from flask import Response, current_app
 from flask_appbuilder.api import expose, permission_name, protect, safe
 from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer
-
 from superset_core.rest_api.api import RestApi
 from superset_core.rest_api.decorators import api
 
@@ -230,8 +229,8 @@ class NotebookAPI(RestApi):
             403:
               $ref: '#/components/responses/403'
         """
-        from flask import request  # noqa: PLC0415
         import requests as http  # noqa: PLC0415
+        from flask import request  # noqa: PLC0415
 
         body = request.get_json(silent=True) or {}
         db_id: int | None = body.get("db_id")
@@ -262,7 +261,9 @@ class NotebookAPI(RestApi):
 
         notebook_id: str = data["notebook_id"]
         launch_url = _build_launch_url(notebook_id, mode="edit")
-        return self.response(201, result={"notebook_id": notebook_id, "launch_url": launch_url})
+        return self.response(
+            201, result={"notebook_id": notebook_id, "launch_url": launch_url}
+        )
 
     # ------------------------------------------------------------------
     # Launch endpoints

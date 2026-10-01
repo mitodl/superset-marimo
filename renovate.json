@@ -1,0 +1,3 @@
+{
+  "extends": ["local>mitodl/.github:renovate-config"]
+}

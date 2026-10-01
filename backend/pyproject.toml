@@ -36,6 +36,10 @@ ignore = [
     "ANN102",  # missing type annotation for cls
 ]
 
+[tool.ruff.lint.per-file-ignores]
+# Tests use pytest assertions and a deliberately non-production SECRET_KEY.
+"tests/**" = ["S101", "S105"]
+
 [tool.mypy]
 python_version = "3.12"
 strict = true
