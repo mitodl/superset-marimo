@@ -115,7 +115,7 @@ The `flask fab import-roles` command in the Helm init script picks this up on ne
 From the repository root, run [prek](https://prek.j178.dev/), which reads `.pre-commit-config.yaml`. Use the version pinned in `.github/workflows/autofix.yml`:
 
 ```bash
-uv tool install prek==0.5.4
+uv tool install prek==0.5.3
 prek install -f      # replaces an existing pre-commit git hook
 prek run --all-files
 ```
